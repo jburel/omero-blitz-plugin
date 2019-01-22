@@ -3,6 +3,7 @@ package org.openmicroscopy.blitz.tasks
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.artifacts.DependencySet
+import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.logging.Logging
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
@@ -19,7 +20,7 @@ import org.gradle.api.tasks.TaskAction
  */
 class ImportMappingsTask extends DefaultTask {
 
-    private final def Log = Logging.getLogger(ImportMappingsTask)
+    private static final def Log = Logging.getLogger(ImportMappingsTask)
 
     private final String CONFIGURATION_NAME = 'omeXmlFiles'
 
@@ -36,10 +37,11 @@ class ImportMappingsTask extends DefaultTask {
         }
 
         Log.info("Extracting ome.xml files to: " + extractDir)
+
         project.copy {
             from project.zipTree(omeroModelArtifact.file)
             into extractDir
-            include "mappings/*.ome.xml"
+            include "mappings/**/*.ome.xml"
         }
     }
 
@@ -62,16 +64,25 @@ class ImportMappingsTask extends DefaultTask {
         }
     }
 
-    private def getOmeroModelFromCompileConfig() {
-        return project.configurations.findAll { config ->
-            config.resolvedConfiguration
-                    .resolvedArtifacts
-                    .find { item -> item.name.contains("omero-model") }
+    private ResolvedArtifact getOmeroModelFromCompileConfig() {
+        def resolvableConfigs = project.configurations.findAll {
+            it.canBeResolved
         }
+
+        def artifact = null
+        for (config in resolvableConfigs) {
+            artifact = config.resolvedConfiguration.resolvedArtifacts.find { item ->
+                item.name.contains("omero-model")
+            }
+            if (artifact) {
+                break
+            }
+        }
+        return artifact
     }
 
     private def getOmeroModelWithCustomConfig() {
-        def config = project.configurations.findByName(CONFIGURATION_NAME)
+        def config = project.configurations.(CONFIGURATION_NAME)
         if (!config) {
             config = project.configurations.create(CONFIGURATION_NAME)
                     .setVisible(false)
@@ -86,8 +97,6 @@ class ImportMappingsTask extends DefaultTask {
 
         return config.resolvedConfiguration
                 .resolvedArtifacts
-                .find { item ->
-            item.name.contains("omero-model")
-        }
+                .find { item -> item.name.contains("omero-model") }
     }
 }
