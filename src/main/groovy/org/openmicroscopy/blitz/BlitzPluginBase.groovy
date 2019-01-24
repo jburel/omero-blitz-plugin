@@ -6,13 +6,12 @@ import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.tasks.Delete
 import org.openmicroscopy.blitz.extensions.BlitzExtension
 import org.openmicroscopy.blitz.extensions.SplitExtension
-import org.openmicroscopy.blitz.tasks.ImportMappingsTask
 import org.openmicroscopy.blitz.tasks.SplitTask
 import org.openmicroscopy.dsl.extensions.VelocityExtension
 import org.openmicroscopy.dsl.tasks.DslMultiFileTask
 import org.openmicroscopy.dsl.utils.ResourceLoader
 
-class BlitzBasePlugin implements Plugin<Project> {
+class BlitzPluginBase implements Plugin<Project> {
 
     /**
      * Sets the group name for the DSLPlugin tasks to reside in.
@@ -29,7 +28,6 @@ class BlitzBasePlugin implements Plugin<Project> {
 
     def init(Project project, ExtensionContainer baseExt) {
         setupBlitzExtension(project, baseExt)
-        configureImportMappingsTask(project)
         configureCombineTask(project)
         configureSplitTasks(project)
     }
@@ -43,20 +41,6 @@ class BlitzBasePlugin implements Plugin<Project> {
     }
 
     /**
-     * Creates task to extract .ome.xml files from omero-model
-     * and place them in {@code omeXmlDir}
-     * @param project
-     * @return
-     */
-    void configureImportMappingsTask(Project project) {
-        project.tasks.register("importOmeXmlTask", ImportMappingsTask) { task ->
-            task.group = GROUP
-            task.description = "Extracts mapping files from omero-model jar"
-            task.extractDir = blitzExt.omeXmlDir
-        }
-    }
-
-    /**
      * Creates task to process combined.vm template and spit out .combined
      * files for generating sources.
      * @param project
@@ -67,22 +51,21 @@ class BlitzBasePlugin implements Plugin<Project> {
         def ve = new VelocityExtension(project)
 
         project.tasks.register("generateCombinedFiles", DslMultiFileTask) { task ->
-            task.dependsOn project.tasks.named("importOmeXmlTask")
             task.group = GROUP
             task.description = "Processes combined.vm and generates .combined files"
             task.profile = "psql"
             task.template = ResourceLoader.loadFile(project, "templates/combined.vm")
             task.velocityProperties = ve.data.get()
             task.outputDir = blitzExt.combinedDir
+            task.omeXmlFiles = blitzExt.omeXmlFiles
             task.formatOutput = { st -> "${st.getShortname()}I.combined" }
-            task.omeXmlFiles = project.fileTree(dir: blitzExt.omeXmlDir, include: "**/*.ome.xml")
         }
 
         // Add cleanup tasks
         project.tasks.register("cleanCombinedFiles", Delete) { task ->
             task.group = GROUP
             task.delete = blitzExt.combinedDir
-            task.shouldRunAfter project.tasks.named("clean")
+            // task.shouldRunAfter project.tasks.named("clean")
         }
     }
 
@@ -107,7 +90,7 @@ class BlitzBasePlugin implements Plugin<Project> {
             project.tasks.register("clean${splitTask.name.capitalize()}", Delete) { task ->
                 task.group = GROUP
                 task.delete = splitTask.get().outputDir
-                task.shouldRunAfter project.tasks.named("clean")
+                // task.shouldRunAfter project.tasks.named("clean")
             }
         }
     }

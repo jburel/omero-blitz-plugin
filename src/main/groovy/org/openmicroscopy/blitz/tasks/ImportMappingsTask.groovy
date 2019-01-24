@@ -24,7 +24,7 @@ class ImportMappingsTask extends DefaultTask {
 
     private final String CONFIGURATION_NAME = 'omeXmlFiles'
 
-    private final String OMERO_MODEL_VERSION = project.properties['omeroModelVersion']
+    private final String OMERO_MODEL_VERSION = project.properties['omeroModelVersion'] ?: "5.5.0-SNAPSHOT"
 
     @OutputDirectory
     File extractDir
@@ -81,8 +81,8 @@ class ImportMappingsTask extends DefaultTask {
         return artifact
     }
 
-    private def getOmeroModelWithCustomConfig() {
-        def config = project.configurations.(CONFIGURATION_NAME)
+    private ResolvedArtifact getOmeroModelWithCustomConfig() {
+        def config = project.configurations.findByName(CONFIGURATION_NAME)
         if (!config) {
             config = project.configurations.create(CONFIGURATION_NAME)
                     .setVisible(false)
