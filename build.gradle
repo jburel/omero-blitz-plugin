@@ -31,5 +31,5 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
 }
 
-apply from: "integTest.gradle"
+//apply from: "integTest.gradle"
 apply from: "publish.gradle"
