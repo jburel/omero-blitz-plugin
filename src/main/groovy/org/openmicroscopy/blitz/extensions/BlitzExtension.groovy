@@ -1,6 +1,7 @@
 package org.openmicroscopy.blitz.extensions
 
 import org.gradle.api.Project
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.FileCollection
 
 class BlitzExtension {
@@ -11,13 +12,36 @@ class BlitzExtension {
 
     final Project project
 
+    final ConfigurableFileCollection omeXmlFiles
+
     File combinedDir
 
     File omeXmlDir
 
     File outputDir
 
-    FileCollection omeXmlFiles
+    BlitzExtension(Project project) {
+        this.project = project
+        this.omeXmlFiles = project.files()
+        this.combinedDir = project.file("${project.buildDir}/${COMBINED_FILES_DIR}")
+        this.omeXmlDir = project.file("${project.buildDir}/$OME_XML_FILES_DIR")
+    }
+
+    void omeXmlFiles(FileCollection files) {
+        setOmeXmlFiles(files)
+    }
+
+    void omeXmlFiles(Object... files) {
+        setOmeXmlFiles(files)
+    }
+
+    void setOmeXmlFiles(FileCollection files) {
+        omeXmlFiles.setFrom(files)
+    }
+
+    void setOmeXmlFiles(Object... files) {
+        setOmeXmlFiles(project.files(files))
+    }
 
     void setCombinedDir(Object dir) {
         combinedDir = project.file(dir)
@@ -43,9 +67,4 @@ class BlitzExtension {
         setOutputDir(dir)
     }
 
-    BlitzExtension(Project project) {
-        this.project = project
-        this.combinedDir = project.file("${project.buildDir}/${COMBINED_FILES_DIR}")
-        this.omeXmlDir = project.file("${project.buildDir}/$OME_XML_FILES_DIR")
-    }
 }

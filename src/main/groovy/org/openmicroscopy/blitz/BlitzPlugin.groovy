@@ -28,14 +28,15 @@ class BlitzPlugin implements Plugin<Project> {
      * @return
      */
     void configureImportMappingsTask(Project project) {
-        project.tasks.register("importOmeXmlTask", ImportMappingsTask) { t ->
+        def importOmeXmlTask = project.tasks.register("importOmeXmlTask", ImportMappingsTask) { t ->
             t.group = BlitzPluginBase.GROUP
             t.description = "Extracts mapping files from omero-model jar"
             t.extractDir = "${project.buildDir}/extracted"
-            project.tasks.named('generateCombinedFiles').configure {
-                dependsOn t
-                omeXmlFiles = project.files(t.extractDir)
-            }
+        }
+
+        project.tasks.named('generateCombinedFiles').configure { t ->
+            t.dependsOn importOmeXmlTask
+            t.omeXmlFiles = project.files(importOmeXmlTask.get().extractDir).files
         }
     }
 

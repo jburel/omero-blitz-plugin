@@ -60,20 +60,13 @@ class BlitzPluginBase implements Plugin<Project> {
             task.omeXmlFiles = blitzExt.omeXmlFiles
             task.formatOutput = { st -> "${st.getShortname()}I.combined" }
         }
-
-        // Add cleanup tasks
-        project.tasks.register("cleanCombinedFiles", Delete) { task ->
-            task.group = GROUP
-            task.delete = blitzExt.combinedDir
-            // task.shouldRunAfter project.tasks.named("clean")
-        }
     }
 
     void configureSplitTasks(Project project) {
         blitzExt.api.all { SplitExtension split ->
             String taskName = "split${split.name.capitalize()}"
 
-            def splitTask = project.tasks.register(taskName, SplitTask) { task ->
+            project.tasks.register(taskName, SplitTask) { task ->
                 task.dependsOn project.tasks.named("generateCombinedFiles")
                 task.group = GROUP
                 task.description = "Splits ${split.language} from .combined files"
@@ -85,22 +78,6 @@ class BlitzPluginBase implements Plugin<Project> {
                 task.language = split.language
                 task.replaceWith = split.outputName
             }
-
-            // Add cleanup tasks
-            project.tasks.register("clean${splitTask.name.capitalize()}", Delete) { task ->
-                task.group = GROUP
-                task.delete = splitTask.get().outputDir
-                // task.shouldRunAfter project.tasks.named("clean")
-            }
-        }
-    }
-
-    void addCleanTask(Project project, String taskName, File toDelete) {
-        String cleanTaskName = "clean${taskName.capitalize()}"
-        project.tasks.register(cleanTaskName, Delete) { task ->
-            task.group = GROUP
-            task.delete = toDelete
-            task.shouldRunAfter project.tasks.getByName('clean')
         }
     }
 
