@@ -23,7 +23,6 @@ repositories {
 }
 
 dependencies {
-    testImplementation gradleTestKit()
     testImplementation "junit:junit:4.12"
     testImplementation "org.spockframework:spock-core:1.2-groovy-2.5"
 
@@ -31,5 +30,4 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
 }
 
-//apply from: "integTest.gradle"
 apply from: "publish.gradle"
