@@ -38,11 +38,11 @@ class BlitzPlugin implements Plugin<Project> {
      */
     void configureImportMappingsTask(Project project) {
         // Set default extension values
-        final def omeXmlFilesDir = "${project.buildDir}/extracted"
+        final def omeXmlFilesDir = "${project.buildDir}/mappings"
         final def includePatterns = "**/*.ome.xml"
 
         // Set BlitzExtension.omeXmlFiles to default to where extract .ome.xml files will go
-        project.blitz.omeXmlFiles = project.fileTree(dir: "${project.buildDir}/extracted", include: "**/*.ome.xml")
+        project.blitz.omeXmlFiles = project.fileTree(dir: omeXmlFilesDir, include: includePatterns)
 
         // Register the importOmeXmlTask
         project.tasks.register("importOmeXmlTask", Copy) { t ->
@@ -63,6 +63,9 @@ class BlitzPlugin implements Plugin<Project> {
                 t.into omeXmlFilesDir
                 t.include includePatterns
                 t.includeEmptyDirs = false
+                // Flatten the hierarchy by setting the path
+                // of all files to their respective basename
+                t.eachFile { path = name }
             }
 
             // Configure generateCombinedFiles task to depend on importOmeXmlTask
