@@ -3,7 +3,6 @@ package org.openmicroscopy.blitz
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionContainer
-import org.gradle.api.tasks.Delete
 import org.openmicroscopy.blitz.extensions.BlitzExtension
 import org.openmicroscopy.blitz.extensions.SplitExtension
 import org.openmicroscopy.blitz.tasks.SplitTask

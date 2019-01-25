@@ -3,6 +3,7 @@ package org.openmicroscopy.blitz
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.logging.Logging
 import org.openmicroscopy.blitz.tasks.ImportMappingsTask
 import org.openmicroscopy.dsl.DslPlugin
@@ -35,9 +36,17 @@ class BlitzPlugin implements Plugin<Project> {
         }
 
         project.tasks.named('generateCombinedFiles').configure { t ->
-            t.dependsOn importOmeXmlTask
-            t.omeXmlFiles = project.files(importOmeXmlTask.get().extractDir).files
+            ConfigurableFileCollection cfc = project.blitz.omeXmlFiles
+            if (cfc.isEmpty()) {
+                t.dependsOn importOmeXmlTask
+            }
         }
+
+        // Set default
+        project.blitz.omeXmlFiles = project.fileTree(
+                dir: importOmeXmlTask.get().extractDir,
+                include: "mappings/**/*.ome.xml"
+        )
     }
 
     /**
