@@ -52,8 +52,8 @@ class BlitzPluginBase implements Plugin<Project> {
         project.tasks.register("generateCombinedFiles", DslMultiFileTask) { task ->
             task.group = GROUP
             task.description = "Processes combined.vm and generates .combined files"
-            task.profile = "psql"
-            task.template = ResourceLoader.loadFile(project, "templates/combined.vm")
+            task.profile = blitzExt.profile
+            task.template = "ResourceLoader.loadFile(project, "templates/combined.vm")
             task.velocityProperties = ve.data.get()
             task.outputDir = blitzExt.combinedDir
             task.omeXmlFiles = blitzExt.omeXmlFiles
@@ -90,4 +90,5 @@ class BlitzPluginBase implements Plugin<Project> {
         }
         return fallback
     }
+
 }

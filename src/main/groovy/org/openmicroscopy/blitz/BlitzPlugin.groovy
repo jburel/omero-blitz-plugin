@@ -40,12 +40,20 @@ class BlitzPlugin implements Plugin<Project> {
         // Set default extension values
         final def omeXmlFilesDir = "${project.buildDir}/mappings"
         final def includePatterns = "**/*.ome.xml"
+        final def profileFilesDir = "${project.buildDir}/templates"
+        final def pattern = "**/*-types.properties"
 
         // Set BlitzExtension.omeXmlFiles to default to where extract .ome.xml files will go
         project.blitz.omeXmlFiles = project.fileTree(dir: omeXmlFilesDir, include: includePatterns)
 
         // Register the importOmeXmlTask
         project.tasks.register("importOmeXmlTask", Copy) { t ->
+            t.group = BlitzPluginBase.GROUP
+            t.description = "Extracts mapping files from omero-model jar"
+        }
+
+        // Register the importOmeXmlTask
+        project.tasks.register("importProfileTask", Copy) { t ->
             t.group = BlitzPluginBase.GROUP
             t.description = "Extracts mapping files from omero-model jar"
         }
@@ -65,8 +73,24 @@ class BlitzPlugin implements Plugin<Project> {
                 t.includeEmptyDirs false
                 // Flatten the hierarchy by setting the path
                 // of all files to their respective basename
+                t.eachFile {  path = name }
+            }
+
+            // Register extract ome.xml from omero-model task
+            project.tasks.named("importProfileTask").configure { t ->
+                t.from project.zipTree(omeroModelArtifact.file)
+                t.into profileFilesDir
+                t.include pattern
+                t.includeEmptyDirs false
+                // Flatten the hierarchy by setting the path
+                // of all files to their respective basename
                 t.eachFile { path = name }
             }
+
+            project.tasks.named('generateObjectFactoryRegistrar').configure { t ->
+                t.dependsOn project.tasks.named("importProfileTask")
+            }
+
 
             // Configure generateCombinedFiles task to depend on importOmeXmlTask
             project.tasks.named('generateCombinedFiles').configure { t ->

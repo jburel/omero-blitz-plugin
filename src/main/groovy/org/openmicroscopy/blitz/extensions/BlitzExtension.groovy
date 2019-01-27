@@ -20,6 +20,8 @@ class BlitzExtension {
 
     File outputDir
 
+    String profile
+
     BlitzExtension(Project project) {
         this.project = project
         this.omeXmlFiles = project.files()
@@ -65,6 +67,22 @@ class BlitzExtension {
 
     void outputDir(Object dir) {
         setOutputDir(dir)
+    }
+
+    void profile(String profile) {
+        setProfile(profile)
+    }
+
+    void setProfile(String profile) {
+        this.profile = profile
+    }
+
+    void profile(Object p) {
+        setProfile(p)
+    }
+
+    void setProfile(Object profile) {
+        this.profile = profile
     }
 
 }
