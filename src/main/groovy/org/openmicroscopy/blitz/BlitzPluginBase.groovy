@@ -53,7 +53,7 @@ class BlitzPluginBase implements Plugin<Project> {
             task.group = GROUP
             task.description = "Processes combined.vm and generates .combined files"
             task.profile = blitzExt.profile
-            task.template = "ResourceLoader.loadFile(project, "templates/combined.vm")
+            task.template = blitzExt.template
             task.velocityProperties = ve.data.get()
             task.outputDir = blitzExt.combinedDir
             task.omeXmlFiles = blitzExt.omeXmlFiles

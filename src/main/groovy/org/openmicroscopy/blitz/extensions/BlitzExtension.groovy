@@ -22,6 +22,8 @@ class BlitzExtension {
 
     String profile
 
+    File template
+
     BlitzExtension(Project project) {
         this.project = project
         this.omeXmlFiles = project.files()
@@ -83,6 +85,14 @@ class BlitzExtension {
 
     void setProfile(Object profile) {
         this.profile = profile
+    }
+
+    void setTemplate(Object p) {
+        template = project.file(p)
+    }
+
+    void template(Object p) {
+        setTemplate(p)
     }
 
 }
