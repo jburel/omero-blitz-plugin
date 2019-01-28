@@ -52,7 +52,7 @@ class BlitzPluginBase implements Plugin<Project> {
         project.tasks.register("generateCombinedFiles", DslMultiFileTask) { task ->
             task.group = GROUP
             task.description = "Processes combined.vm and generates .combined files"
-            task.profile = blitzExt.profile
+            task.databaseTypes = blitzExt.databaseTypes
             task.template = blitzExt.template
             task.velocityProperties = ve.data.get()
             task.outputDir = blitzExt.combinedDir
