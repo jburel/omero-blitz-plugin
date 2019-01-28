@@ -20,7 +20,7 @@ class BlitzExtension {
 
     File outputDir
 
-    String profile
+    File databaseTypes
 
     File template
 
@@ -71,28 +71,20 @@ class BlitzExtension {
         setOutputDir(dir)
     }
 
-    void profile(String profile) {
-        setProfile(profile)
-    }
-
-    void setProfile(String profile) {
-        this.profile = profile
-    }
-
-    void profile(Object p) {
-        setProfile(p)
-    }
-
-    void setProfile(Object profile) {
-        this.profile = profile
-    }
-
     void setTemplate(Object p) {
         template = project.file(p)
     }
 
     void template(Object p) {
         setTemplate(p)
+    }
+
+    void databaseTypes(Object dir) {
+        setDatabaseTypes(dir)
+    }
+
+    void setDatabaseTypes(Object dir) {
+        databaseTypes = project.file(dir)
     }
 
 }
