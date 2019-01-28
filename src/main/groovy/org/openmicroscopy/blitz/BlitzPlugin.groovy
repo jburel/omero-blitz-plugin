@@ -70,34 +70,40 @@ class BlitzPlugin implements Plugin<Project> {
                 t.from project.zipTree(omeroModelArtifact.file)
                 t.into omeXmlFilesDir
                 t.include includePatterns
+                t.include pattern
                 t.includeEmptyDirs false
                 // Flatten the hierarchy by setting the path
                 // of all files to their respective basename
                 t.eachFile {  path = name }
             }
 
-            // Register extract ome.xml from omero-model task
-            project.tasks.named("importProfileTask").configure { t ->
-                t.from project.zipTree(omeroModelArtifact.file)
-                t.into profileFilesDir
-                t.include pattern
-                t.includeEmptyDirs false
-                // Flatten the hierarchy by setting the path
-                // of all files to their respective basename
-                t.eachFile { path = name }
-            }
+            // Register extract types.properties files from omero-model task
+//            project.tasks.named("importProfileTask").configure { t ->
+//                t.from project.zipTree(omeroModelArtifact.file)
+//                t.into profileFilesDir
+//                t.include pattern
+//                t.includeEmptyDirs false
+//                // Flatten the hierarchy by setting the path
+//                // of all files to their respective basename
+//                t.eachFile { path = name }
+//            }
 
-            project.tasks.named('generateObjectFactoryRegistrar').configure { t ->
-                t.dependsOn project.tasks.named("importProfileTask")
-            }
-
-
+//            project.tasks.named('compileJava').configure { t ->
+//                t.dependsOn project.tasks.named("importProfileTask")
+//                t.dependsOn project.tasks.named("importOmeXmlTask")
+//            }
+//
+//            project.tasks.named('generateObjectFactoryRegistrar').configure { t ->
+//                t.dependsOn project.tasks.named("importProfileTask")
+//            }
+//
+//
             // Configure generateCombinedFiles task to depend on importOmeXmlTask
-            project.tasks.named('generateCombinedFiles').configure { t ->
-                if (project.blitz.omeXmlFiles.isEmpty()) {
-                    t.dependsOn project.tasks.named("importOmeXmlTask")
-                }
-            }
+//            project.tasks.named('generateCombinedFiles').configure { t ->
+//                if (project.blitz.omeXmlFiles.isEmpty()) {
+//                    t.dependsOn project.tasks.named("importOmeXmlTask")
+//                }
+//            }
         }
     }
 
