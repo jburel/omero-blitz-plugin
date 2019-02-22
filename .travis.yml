@@ -1,4 +1,6 @@
-#language: java
+language: java
+install:
+  - true
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -7,9 +9,9 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
-before_install:
-  - sudo apt-get update -q
-  - sudo apt-get install -y openjdk-8-jdk
+#before_install:
+#  - sudo apt-get update -q
+#  - sudo apt-get install -y openjdk-8-jdk
 
 before_script:
   - git clone git://github.com/ome/omero-dsl-plugin
@@ -23,7 +25,7 @@ script:
 
 deploy:
   provider: script
-  script: gradle publish
+  script: ./gradlew publish
   skip_cleanup: true
   on:
     branch: deploy
