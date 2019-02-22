@@ -17,10 +17,10 @@ before_script:
   - git clone git://github.com/ome/omero-dsl-plugin
   - cd omero-dsl-plugin && ./gradlew publishToMavenLocal
   - cd ..
-
-script:
   - gradle wrapper --gradle-version 5.1.1
   - ./gradlew -v
+
+script:
   - ./gradlew publishToMavenLocal
 
 deploy:
