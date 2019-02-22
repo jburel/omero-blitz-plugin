@@ -13,11 +13,13 @@ before_install:
   - cd ..
 
 script:
+  - gradle wrapper --gradle-version 5.1.1
+  - ./gradlew -v
   - ./gradlew publishToMavenLocal
 
 deploy:
   provider: script
-  script: ./gradlew publish
+  script: gradle publish
   skip_cleanup: true
   on:
     branch: deploy
