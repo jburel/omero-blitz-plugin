@@ -78,11 +78,9 @@ class BlitzPlugin implements Plugin<Project> {
         project.tasks.register(TASK_IMPORT_MAPPINGS, ImportResourcesTask, new Action<ImportResourcesTask>() {
             @Override
             void execute(ImportResourcesTask t) {
-                t.with {
-                    config = ImportHelper.getConfigurationForOmeroModel(project)
-                    extractDir = "$project.buildDir/mappings"
-                    pattern = PATTERN_OME_XML
-                }
+                t.setConfig(ImportHelper.getConfigurationForOmeroModel(project))
+                t.setExtractDir("$project.buildDir/mappings")
+                t.setPattern(PATTERN_OME_XML)
             }
         })
     }
@@ -91,11 +89,9 @@ class BlitzPlugin implements Plugin<Project> {
         project.tasks.register(TASK_IMPORT_DATABASE_TYPES, ImportResourcesTask, new Action<ImportResourcesTask>() {
             @Override
             void execute(ImportResourcesTask t) {
-                t.with {
-                    config = ImportHelper.getConfigurationForOmeroModel(project)
-                    extractDir = "$project.buildDir/databaseTypes"
-                    pattern = PATTERN_DB_TYPE
-                }
+                t.setConfig(ImportHelper.getConfigurationForOmeroModel(project))
+                t.setExtractDir("$project.buildDir/databaseTypes")
+                t.setPattern(PATTERN_DB_TYPE)
             }
         })
     }
