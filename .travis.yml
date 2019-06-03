@@ -11,4 +11,8 @@ install:
   - DIR=$PWD; (cd /tmp; gradle wrapper --gradle-version=5.2.1; mv .gradle gradle gradlew $DIR)
 
 script:
+  - git clone --single-branch --branch update/551 git://github.com/rgozim/omero-dsl-plugin
+  - cd omero-dsl-plugin && ../gradlew publishToMavenLocal && cd ..
+  - git clone --single-branch --branch update/551 git://github.com/rgozim/omero-api-plugin
+  - cd omero-api-plugin && ../gradlew publishToMavenLocal && cd ..
   - ./gradlew publishToMavenLocal
